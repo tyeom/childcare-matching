@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './auth/strategy/jwt.strategy';
 import { ParentModule } from './parent/parent.module';
 import { ParentAddress } from './parent/entities/parent-address.entity';
 import { JobPost } from './parent/entities/job-post.entity';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -34,6 +35,11 @@ import { JobPost } from './parent/entities/job-post.entity';
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
         JWT_SECRET_KEY: Joi.string().required(),
+        MATCHING_SUBWAY_STATIONS_NAX_DISTANCE: Joi.number()
+          .default(1)
+          .required(),
+        KAKAO_API_URL: Joi.string().required(),
+        KAKAO_API: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -58,6 +64,7 @@ import { JobPost } from './parent/entities/job-post.entity';
     UsersModule,
     TeachersModule,
     ParentModule,
+    AdminModule,
   ],
   providers: [
     {

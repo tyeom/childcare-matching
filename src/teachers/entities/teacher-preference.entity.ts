@@ -1,4 +1,5 @@
 import { BaseEntity } from '@app/common/base/entities';
+import { AlertPreferenceType } from '@app/common/enums';
 import { Column, Entity } from 'typeorm';
 
 @Entity()
@@ -8,18 +9,6 @@ export class TeacherPreference extends BaseEntity {
    */
   @Column({ type: 'text' })
   address: string;
-
-  /**
-   * 위도
-   */
-  @Column({ type: 'decimal', precision: 10, scale: 8 })
-  latitude: number;
-
-  /**
-   * 경도
-   */
-  @Column({ type: 'decimal', precision: 11, scale: 8 })
-  longitude: number;
 
   /**
    * 선호 지역 (서울, 수원 등)
@@ -32,6 +21,12 @@ export class TeacherPreference extends BaseEntity {
    */
   @Column({ type: 'json', default: [] })
   preferredSubwayStations: string[];
+
+  /**
+   * 선호 알림 타입
+   */
+  @Column({ type: 'enum', enum: AlertPreferenceType })
+  alertPreferenceType: AlertPreferenceType;
 
   /**
    * 최대 이동 거리 (km)

@@ -6,6 +6,7 @@ import {
   Put,
   Delete,
   Get,
+  NotFoundException,
 } from '@nestjs/common';
 import { TeacherPreferenceService } from './teacher-preference.service';
 import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
@@ -63,12 +64,19 @@ export class TeacherPreferenceController {
     const preference =
       await this.teacherPreferenceService.findPreferenceByCreateBy(user.id);
 
+    if (!preference) {
+      throw new NotFoundException('선호사항을 찾을 수 없습니다.');
+    }
+
     return preference;
   }
 
   @Put()
   @RBAC(Role.ADMIN, Role.TEACHER)
   @ApiOperation({ summary: '선생님 선호사항 수정' })
+  @ApiBody({
+    type: UpdateTeacherPreferenceDto,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: '선호사항이 성공적으로 수정되었습니다.',

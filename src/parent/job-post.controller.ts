@@ -23,6 +23,7 @@ import { UserDto } from 'src/users/dto/user.dto';
 import { JobPostService } from './job-post.service';
 import { CreateJobPostDto } from './dto/create-Job-post.dto';
 import { UpdateJobPostDto } from './dto/update-Job-post.dto';
+import { AddAddressDto } from './dto/add-address.dto';
 
 @Controller('job-post')
 @ApiBearerAuth()
@@ -85,6 +86,9 @@ export class JobPostController {
   @RBAC(Role.ADMIN, Role.PARENTS)
   @ApiOperation({ summary: '공고 수정' })
   @ApiParam({ name: 'jobId', description: '공고 ID' })
+  @ApiBody({
+    type: UpdateJobPostDto,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: '공고가 성공적으로 수정되었습니다.',
@@ -122,5 +126,87 @@ export class JobPostController {
     @UserDecorator() user: UserDto,
   ) {
     return await this.jobPostService.deleteJobPost(jobId, user);
+  }
+
+  @Post(':jobId/addresses')
+  @RBAC(Role.ADMIN, Role.PARENTS)
+  @ApiOperation({ summary: '공고에 주소 추가' })
+  @ApiParam({ name: 'jobId', description: '공고 ID' })
+  @ApiBody({
+    type: AddAddressDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: '주소가 성공적으로 추가되었습니다.',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: '최대 5개까지 주소 등록이 가능합니다.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: '공고를 찾을 수 없습니다.',
+  })
+  async addAddressToJobPost(
+    @Param('jobId', ParseIntPipe) jobId: number,
+    @Body() addAddressDto: AddAddressDto,
+    @UserDecorator() user: UserDto,
+  ) {
+    return await this.jobPostService.addAddressToJobPost(
+      jobId,
+      addAddressDto,
+      user,
+    );
+  }
+
+  @Delete(':jobId/addresses/:addressId')
+  @RBAC(Role.ADMIN, Role.PARENTS)
+  @ApiOperation({ summary: '공고에서 주소 삭제' })
+  @ApiParam({ name: 'jobId', description: '공고 ID' })
+  @ApiParam({ name: 'addressId', description: '주소 ID' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: '주소가 성공적으로 삭제되었습니다.',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: '최소 1개의 주소는 유지되어야 합니다.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: '공고 또는 주소를 찾을 수 없습니다.',
+  })
+  async removeAddressFromJobPost(
+    @Param('jobId', ParseIntPipe) jobId: number,
+    @Param('addressId', ParseIntPipe) addressId: number,
+    @UserDecorator() user: UserDto,
+  ) {
+    return await this.jobPostService.removeAddressFromJobPost(
+      jobId,
+      addressId,
+      user,
+    );
+  }
+
+  @Get(':jobId/matching-teachers')
+  @RBAC(Role.ADMIN, Role.PARENTS)
+  @ApiOperation({
+    summary: '공고 추천 대상 선생님 조회 (공고에 등록된 주소 기준)',
+  })
+  @ApiParam({ name: 'jobId', description: '공고 ID' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '추천 대상 선생님 목록 조회 성공',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: '공고를 찾을 수 없습니다.',
+  })
+  async findMatchingTeachers(
+    @Param('jobId', ParseIntPipe) jobId: number,
+    @UserDecorator() user: UserDto,
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return await this.jobPostService.findMatchingTeachers(jobId, user);
   }
 }

@@ -21,8 +21,10 @@ export class UsersService implements OnModuleInit {
       await this.createDefaultAdmin();
       // 서비스 최초 실행시 기본 학부모 계정 [PARENTS] 추가
       await this.createDefaultParents();
+      await this.createDefaultParents2();
       // Auth 서비스 최초 실행시 기본 선생님 계정 [TEACHER] 추가
       await this.createDefaultTeacher();
+      await this.createDefaultTeacher2();
     } catch (error) {
       console.error('onModuleInit ERROR =>', error);
     }
@@ -104,6 +106,47 @@ export class UsersService implements OnModuleInit {
     }
   }
 
+  /**
+   * 기본 학부모 계정 추가 [Database]
+   */
+  private async createDefaultParents2() {
+    try {
+      console.log('학부모2 계정 존재 여부 체크');
+      const parentsUser = await this.findOneByUserId('parents2');
+
+      if (parentsUser) {
+        console.warn('기본 학부모2 계정 존재함');
+        return;
+      }
+
+      const hash = await this.getHashRounds('1234');
+      const userDto: CreateUserDto = new CreateUserDto();
+      userDto.userId = 'parents1';
+      userDto.userName = '학부모2(기본)';
+      userDto.phone = '+821012341111';
+      userDto.password = hash;
+      userDto.email = 'parents2@a.com';
+      userDto.role = Role.PARENTS;
+
+      const createdParentsUser = await this.userRepository.save({
+        ...userDto,
+        password: hash,
+      });
+
+      if (!createdParentsUser) {
+        console.error('기본 학부모2 계정 생성 오류!');
+      } else {
+        console.log('기본 학부모2 계정 생성 완료');
+      }
+    } catch (error) {
+      console.error('createDefaultParents2 ERROR =>', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 기본 선생님 계정 추가 [Database]
+   */
   private async createDefaultTeacher() {
     try {
       console.log('선생님 계정 존재 여부 체크');
@@ -135,6 +178,44 @@ export class UsersService implements OnModuleInit {
       }
     } catch (error) {
       console.error('createDefaultTeacher ERROR =>', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 기본 선생님2 계정 추가 [Database]
+   */
+  private async createDefaultTeacher2() {
+    try {
+      console.log('선생님2 계정 존재 여부 체크');
+      const teacherUser = await this.findOneByUserId('teacher2');
+
+      if (teacherUser) {
+        console.warn('기본 선생님2 계정 존재함');
+        return;
+      }
+
+      const hash = await this.getHashRounds('1234');
+      const userDto: CreateUserDto = new CreateUserDto();
+      userDto.userId = 'teacher2';
+      userDto.userName = '선생님2(기본)';
+      userDto.phone = '+82101231222';
+      userDto.password = hash;
+      userDto.email = 'teacher2@a.com';
+      userDto.role = Role.TEACHER;
+
+      const createdTeacherUser = await this.userRepository.save({
+        ...userDto,
+        password: hash,
+      });
+
+      if (!createdTeacherUser) {
+        console.error('기본 선생님2 계정 생성 오류!');
+      } else {
+        console.log('기본 선생님2 계정 생성 완료');
+      }
+    } catch (error) {
+      console.error('createDefaultTeacher2 ERROR =>', error);
       throw error;
     }
   }

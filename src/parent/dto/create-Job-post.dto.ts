@@ -36,7 +36,7 @@ export class CreateJobPostDto extends BaseDto {
 
   @ApiProperty({ description: '수업 시간(분)' })
   @IsNumber()
-  @Min(60)
+  @Min(40)
   @Max(240)
   sessionDuration: number;
 

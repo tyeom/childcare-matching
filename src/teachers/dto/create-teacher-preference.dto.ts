@@ -7,27 +7,17 @@ import {
   Min,
   Max,
   IsNotEmpty,
+  IsEnum,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from '@app/common/base/dto/base.dto';
+import { AlertPreferenceType } from '@app/common/enums';
 
 export class CreateTeacherPreferenceDto extends BaseDto {
   @ApiProperty({ description: '주소' })
   @IsString()
   @IsNotEmpty()
   address: string;
-
-  @ApiProperty({ description: '위도' })
-  @IsNumber()
-  @Min(-90)
-  @Max(90)
-  latitude: number;
-
-  @ApiProperty({ description: '경도' })
-  @IsNumber()
-  @Min(-180)
-  @Max(180)
-  longitude: number;
 
   @ApiProperty({
     description: '선호 지역',
@@ -47,6 +37,10 @@ export class CreateTeacherPreferenceDto extends BaseDto {
   @IsArray()
   @IsString({ each: true })
   preferredSubwayStations: string[];
+
+  @ApiProperty({ description: '선호 알림 타입', enum: AlertPreferenceType })
+  @IsEnum(AlertPreferenceType)
+  alertPreferenceType: AlertPreferenceType;
 
   @ApiProperty({ description: '최대 이동 거리(km)', default: 5.0 })
   @IsOptional()
