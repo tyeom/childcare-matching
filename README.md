@@ -1,3 +1,127 @@
+# ERD (Entity Relationship Diagram)
+<img width="1798" height="892" alt="image" src="https://github.com/user-attachments/assets/f7cf04de-633e-40af-b441-845f14528c9d" />
+
+# Flow Chart
+<img width="1710" height="1439" alt="image" src="https://github.com/user-attachments/assets/9655ca1f-86bd-4e51-9bca-75ffb0b87e46" />
+
+***
+
+# 실행 방법
+- 요구 사항
+  Docker와 Docker Compose가 설치되어 있어야 합니다.
+
+```
+# 도커 빌드 및 컨테이너 실행
+$ docker-compose up --build
+
+# CHILDCARE-MATCHING-SERVICE 디버그 실행
+$ pnpm start:debug
+```
+
+> **서비스 접근 : http://localhost:3002** <br/><br/>
+>
+> **swagger : http://localhost:3002/swagger** <br/><br/>
+>
+> **서비스가 처음 실행될 때 다음 테스트 계정이 자동으로 생성됩니다:<br/>**
+> 
+> **1. 기본 관리자 계정**<br/>
+>  - id : admin<br/>
+>  - password : 1234<br/><br/>
+
+> **2. 기본 학부모1 계정**<br/>
+> - id : parents1<br/>
+> - password : 1234<br/><br/>
+>
+> **3. 기본 학부모2 계정**<br/>
+> - id : parents2<br/>
+> - password : 1234<br/><br/>
+>
+> **4. 기본 선생님1 계정**<br/>
+> - id : teacher1<br/>
+> - password : 1234<br/><br/>
+>
+> **5. 기본 선생님2 계정**<br/>
+> - id : teacher2<br/>
+> - password : 1234<br/><br/>
+
+# 주요 APIs 정보
+#### 기본 데이터 생성
+```
+curl -X 'POST' \
+  '/admin/seed' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc1NzYzOTkxOSwiZXhwIjoxNzU4NTAzOTE5fQ.PlUPL15f2zvIv5RSIXed16ep5Y34FnrSLGfG4e4y9jc' \
+  -d ''
+```
+
+#### 추천 선생님 조회
+```
+curl -X 'GET' \
+  '/job-post/{공고id}/matching-teachers' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer {Bearer 토큰}'
+```
+
+#### 공고 등록 [학부모]
+```
+curl -X 'POST' \
+  '/job-post' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer {Bearer 토큰}'
+  -H 'Content-Type: application/json' \
+  -d '{
+  "title": "string",
+  "jobDetails": "string",
+  "studentLevel": "미취학",
+  "sessionDuration": 240,
+  "preferredDays": [
+    "월",
+    "수",
+    "금"
+  ],
+  "preferredStartTime": "14:00",
+  "requirements": "string",
+  "addresses": [
+    {
+      "detailedAddress": "string",
+      "district": "string",
+      "cityProvince": "string",
+      "addressType": "PRIMARY"
+    }
+  ]
+}'
+```
+
+#### 선호 지역 등록 [선생님]
+```
+curl -X 'POST' \
+  '/teachers-preference' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer {Bearer 토큰}'
+  -H 'Content-Type: application/json' \
+  -d '{
+  "address": "string",
+  "preferredRegions": [
+    "서울",
+    "수원"
+  ],
+  "preferredSubwayStations": [
+    "강남역",
+    "수원역"
+  ],
+  "alertPreferenceType": "ADDRESS",
+  "maxDistance": 5
+}'
+```
+
+
+<br/><br/><br/>
+
+***
+
+<br/><br/><br/>
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
@@ -96,3 +220,4 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
