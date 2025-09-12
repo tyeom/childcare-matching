@@ -59,7 +59,7 @@ export class AuthService {
       },
       {
         secret: secretKey,
-        expiresIn: '24h',
+        expiresIn: '240h',
       },
     );
   }

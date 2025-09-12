@@ -121,7 +121,7 @@ export class UsersService implements OnModuleInit {
 
       const hash = await this.getHashRounds('1234');
       const userDto: CreateUserDto = new CreateUserDto();
-      userDto.userId = 'parents1';
+      userDto.userId = 'parents2';
       userDto.userName = '학부모2(기본)';
       userDto.phone = '+821012341111';
       userDto.password = hash;

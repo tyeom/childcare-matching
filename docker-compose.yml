@@ -1,0 +1,20 @@
+services:
+  postgres:
+        image: postgres:16
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: 1234
+            POSTGRES_DB: childcare-app
+
+  childcare-app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: pnpm run start:dev
+    ports:
+      - 3002:3002
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
